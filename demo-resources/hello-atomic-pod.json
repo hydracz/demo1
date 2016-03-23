@@ -1,0 +1,45 @@
+{
+  "kind": "Pod",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "hello-atomic",
+    "creationTimestamp": null,
+    "labels": {
+      "name": "hello-atomic"
+    }
+  },
+  "spec": {
+    "containers": [
+      {
+        "name": "hello-atomic",
+        "image": "atomicenterprise/hello-atomic:v1.0",
+        "ports": [
+          {
+            "containerPort": 8080,
+            "protocol": "TCP"
+          }
+        ],
+        "resources": {
+          "limits": {
+            "cpu": "10m",
+            "memory": "16Mi"
+          }
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "imagePullPolicy": "IfNotPresent",
+        "capabilities": {},
+        "securityContext": {
+          "capabilities": {},
+          "privileged": false
+        },
+        "nodeSelector": {
+          "region": "primary"
+        }
+      }
+    ],
+    "restartPolicy": "Always",
+    "dnsPolicy": "ClusterFirst",
+    "serviceAccount": ""
+  },
+  "status": {}
+}

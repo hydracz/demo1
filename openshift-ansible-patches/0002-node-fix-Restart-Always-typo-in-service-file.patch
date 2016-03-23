@@ -1,0 +1,33 @@
+From f12f0361de17bf8b1c587a19b60c564661e6d0d3 Mon Sep 17 00:00:00 2001
+From: Jonathan Lebon <jlebon@redhat.com>
+Date: Mon, 16 Nov 2015 16:24:22 -0500
+Subject: [PATCH 2/2] node: fix Restart=Always typo in service file
+
+This is essentially a backport of:
+https://github.com/openshift/origin/pull/5488
+---
+ roles/openshift_node/tasks/main.yml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/roles/openshift_node/tasks/main.yml b/roles/openshift_node/tasks/main.yml
+index aea60b7..396b6d8 100644
+--- a/roles/openshift_node/tasks/main.yml
++++ b/roles/openshift_node/tasks/main.yml
+@@ -40,6 +40,14 @@
+   yum: pkg={{ openshift.common.service_type }}-node{{ openshift_version  }},tuned-profiles-{{ openshift.common.service_type }}-node{{ openshift_version  }} state=present
+   register: node_install_result
+ 
++- name: Fix systemd service file Restart= typo
++  lineinfile: dest=/usr/lib/systemd/system/atomic-openshift-node.service
++              regexp="^Restart=Always$"
++              line="Restart=always"
++
++- name: Reload service files
++  command: systemctl daemon-reload
++
+ - name: Install sdn-ovs package
+   yum: pkg={{ openshift.common.service_type }}-sdn-ovs{{ openshift_version }} state=present
+   register: sdn_install_result
+-- 
+2.6.0
+

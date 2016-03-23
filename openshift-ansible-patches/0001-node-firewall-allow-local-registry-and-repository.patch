@@ -1,0 +1,24 @@
+From 5953b087399e6647c834cc64c600346b6a17acbf Mon Sep 17 00:00:00 2001
+From: Jonathan Lebon <jlebon@redhat.com>
+Date: Mon, 16 Nov 2015 16:16:07 -0500
+Subject: [PATCH 1/2] node firewall: allow local registry and repository
+
+---
+ roles/openshift_node/defaults/main.yml | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/roles/openshift_node/defaults/main.yml b/roles/openshift_node/defaults/main.yml
+index fffbf29..7cebe25 100644
+--- a/roles/openshift_node/defaults/main.yml
++++ b/roles/openshift_node/defaults/main.yml
+@@ -13,3 +13,7 @@ os_firewall_allow:
+ - service: OpenShift OVS sdn
+   port: 4789/udp
+   when: openshift.node.use_openshift_sdn | bool
++- service: Infrastructure registry
++  port: 5000/tcp
++- service: Local yum repository
++  port: 8080/tcp
+-- 
+2.6.0
+

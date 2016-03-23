@@ -1,0 +1,105 @@
+{
+  "kind": "List",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "hello-atomic-complete-example"
+  },
+  "items": [
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "hello-atomic-service"
+      },
+      "spec": {
+        "selector": {
+          "name": "hello-atomic"
+        },
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 27017,
+            "targetPort": 8080
+          }
+        ]
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "hello-atomic-route"
+      },
+      "spec": {
+        "host": "hello-atomic.cloudapps-GUID.oslab.opentlc.com",
+        "to": {
+          "name": "hello-atomic-service"
+        }
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "hello-atomic"
+      },
+      "spec": {
+        "strategy": {
+          "type": "Recreate",
+          "resources": {}
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          }
+        ],
+        "replicas": 1,
+        "selector": {
+          "name": "hello-atomic"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "name": "hello-atomic"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "hello-atomic",
+                "image": "atomicenterprise/hello-atomic:v1.0",
+                "ports": [
+                  {
+                    "name": "hello-tcp-8080",
+                    "containerPort": 8080,
+                    "protocol": "TCP"
+                  }
+                ],
+                "resources": {
+                  "limits": {
+                    "cpu": "10m",
+                    "memory": "16Mi"
+                  }
+                },
+                "livenessProbe": {
+                  "tcpSocket": {
+                    "port": 8080
+                  },
+                  "timeoutSeconds": 1,
+                  "initialDelaySeconds": 10
+                }
+              }
+            ],
+            "restartPolicy": "Always",
+            "dnsPolicy": "ClusterFirst",
+            "serviceAccount": "",
+            "nodeSelector": {
+              "region": "primary"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
